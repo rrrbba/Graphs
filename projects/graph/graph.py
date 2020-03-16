@@ -152,7 +152,7 @@ class Graph:
                     copy_path = path.copy()
                     #append the neighbors to the copied path
                     copy_path.append(neighbor)
-                    #enqueue the copy
+                    #enqueue the copy to the queue
                     q.enqueue(copy_path)
 
     def dfs(self, starting_vertex, destination_vertex):
@@ -161,7 +161,37 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        #Create a stack
+        s = Stack()
+        #Push stack to the starting vertex LIFO
+        s.push([starting_vertex])
+        #Create a set to store visited vertices
+        visited = set()
+        #While stack isn't empty
+        while s.size() > 0:
+            #Pop the first vertex 
+            path = s.pop()
+            #Grab the vertex from the end of the path
+            last_vertex = path[-1]
+            #check if it's been visited
+            #if its been visited
+            if last_vertex not in visited:
+                #mark as visited
+                visited.add(last_vertex)
+                #check if it's the target
+                if last_vertex == destination_vertex:
+                    #if so, return the path
+                    return path
+                #Push a path to all of it's neighbors
+                for neighbor in self.get_neighbors(last_vertex):
+                    #make a copy of the path
+                    copy_path = path.copy()
+                    #append the neighbors to the copied path
+                    copy_path.append(neighbor)
+                    #push the copy to the stack
+                    s.push(copy_path)
+                    
+
 
     def dfs_recursive(self, starting_vertex):
         """
