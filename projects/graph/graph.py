@@ -64,7 +64,7 @@ class Graph:
             v = q.dequeue()
             #check if it's been visited
             #if its been visited
-            if v in visited:
+            if v not in visited:
                 #mark as visited
                 print(v)
                 visited.add(v)
@@ -192,8 +192,9 @@ class Graph:
                     s.push(copy_path)
                     
 
-
-    def dfs_recursive(self, starting_vertex):
+#target = destination, LL is a graph
+#searches usually return paths because you want to find the path to get there
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited = set(), path = []): 
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -201,7 +202,43 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        #dfs is utilized stack
+        #set looks like {}
+        #need path for starting vertex to destination vertex
+
+        #this was giving me an error
+        #if path is None:
+        # if len(path) == 0:
+        #     #return None
+        #     return None
+        # add starting vertex to visited set
+        visited.add(starting_vertex)
+        #set path to [starting vertex], if one node in graph
+        #path = path + [starting_vertex] 
+                #[]   +   [1] = [1]
+        #if 1 node in graph, starting vertex = destination vertex
+        path = path + [starting_vertex]
+        
+        if starting_vertex == destination_vertex:
+            #return path
+            return path
+
+        #loop through a path of neighbors
+        for neighbor in self.get_neighbors(starting_vertex):
+            #check if neighbor in visited
+            if neighbor not in visited:
+            #make a copy of the path
+                new_path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
+                #if new path
+                if new_path:
+                    #return new_path
+                    return new_path
+        
+        # #return None
+        return None
+
+
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
