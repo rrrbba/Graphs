@@ -99,7 +99,8 @@ class Graph:
                     s.push(neighbor)
 
 
-    def dft_recursive(self, starting_vertex, visited = None): 
+    def dft_recursive(self, starting_vertex, visited =None): #made visited = set() instead of None so we don't have to do it below
+        #so instead of checking if it's none, we just go ahead and check to see if starting_vertex is in visited
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
@@ -116,7 +117,7 @@ class Graph:
             print(starting_vertex)
             #get neighbors of starting vertex
             for neighbor in self.get_neighbors(starting_vertex):
-                #call dft_recursive on the neighbor node
+                #call dft_recursive on the neighbor and visited
                 self.dft_recursive(neighbor, visited)
 
 
@@ -128,7 +129,7 @@ class Graph:
         """
         #Create a queue
         q = Queue()
-        #Enqueue a path to the starting vertex FIFO, since path order matters
+        #Enqueue a path to the starting vertex FIFO
         q.enqueue([starting_vertex])
         #Create a set to store visited vertices
         visited = set()
@@ -195,7 +196,7 @@ class Graph:
 
 #target = destination, LL is a graph
 #searches usually return paths because you want to find the path to get there
-    def dfs_recursive(self, starting_vertex, destination_vertex, visited = None, path = None): 
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited = set(), path = []): 
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -207,88 +208,125 @@ class Graph:
         #set looks like {}
         #need path for starting vertex to destination vertex
 
-        if visited is None:
-            visited = set()
-        if path is None:
-            path = []
-        if starting_vertex not in visited:
-            visited.add(starting_vertex)
-            path_copy = path.copy()
-            path_copy.append(starting_vertex)
-            if starting_vertex == destination_vertex:
-                return path_copy
-            for neighbor in self.get_neighbors(starting_vertex):
-                new_path = self.dfs_recursive(neighbor, destination_vertex, visited, path_copy)
-                if new_path is not None:
+        #this was giving me an error
+        #if path is None:
+        # if len(path) == 0:
+        #     #return None
+        #     return None
+
+        # add starting vertex to visited set
+        visited.add(starting_vertex)
+        #set path to [starting vertex], if one node in graph
+        #path = path + [starting_vertex] 
+                #[]   +   [1] = [1]
+        #if 1 node in graph, starting vertex = destination vertex
+        path = path + [starting_vertex]
+        
+        if starting_vertex == destination_vertex:
+            #return path
+            return path
+
+        #loop through a path of neighbors
+        for neighbor in self.get_neighbors(starting_vertex):
+            #check if neighbor in visited
+            if neighbor not in visited:
+            #make a copy of the path
+                new_path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
+                #if new path
+                if new_path:
+                    #return new_path
                     return new_path
+        
+        #return None 
         return None
 
 
+# Given two words (begin_word and end_word), and a dictionary's word list, return the shortest transformation sequence from begin_word to end_word, such that:
+# Only one letter can be changed at a time.
+# Each transformed word must exist in the word list. Note that begin_word is not a transformed word.
+# Note:
+# Return None if there is no such transformation sequence.
+# All words contain only lowercase alphabetic characters.
+# You may assume no duplicates in the word list.
+# You may assume begin_word and end_word are non-empty and are not the same.
 
-if __name__ == '__main__':
-    graph = Graph()  # Instantiate your graph
-    # https://github.com/LambdaSchool/Graphs/blob/master/objectives/breadth-first-search/img/bfs-visit-order.png
-    graph.add_vertex(1)
-    graph.add_vertex(2)
-    graph.add_vertex(3)
-    graph.add_vertex(4)
-    graph.add_vertex(5)
-    graph.add_vertex(6)
-    graph.add_vertex(7)
-    graph.add_edge(5, 3)
-    graph.add_edge(6, 3)
-    graph.add_edge(7, 1)
-    graph.add_edge(4, 7)
-    graph.add_edge(1, 2)
-    graph.add_edge(7, 6)
-    graph.add_edge(2, 4)
-    graph.add_edge(3, 5)
-    graph.add_edge(2, 3)
-    graph.add_edge(4, 6)
+''''
+Sample:
+begin_word = "hit"
+end_word = "cog"
+return: ['hit', 'hot', 'cot', 'cog']
 
-    '''
-    Should print:
-        {1: {2}, 2: {3, 4}, 3: {5}, 4: {6, 7}, 5: {3}, 6: {3}, 7: {1, 6}}
-    '''
-    print(graph.vertices)
+begin_word = "sail"
+end_word = "boat"
+['sail', 'bail', 'boil', 'boll', 'bolt', 'boat']
 
-    '''
-    Valid BFT paths:
-        1, 2, 3, 4, 5, 6, 7
-        1, 2, 3, 4, 5, 7, 6
-        1, 2, 3, 4, 6, 7, 5
-        1, 2, 3, 4, 6, 5, 7
-        1, 2, 3, 4, 7, 6, 5
-        1, 2, 3, 4, 7, 5, 6
-        1, 2, 4, 3, 5, 6, 7
-        1, 2, 4, 3, 5, 7, 6
-        1, 2, 4, 3, 6, 7, 5
-        1, 2, 4, 3, 6, 5, 7
-        1, 2, 4, 3, 7, 6, 5
-        1, 2, 4, 3, 7, 5, 6
-    '''
-    graph.bft(1)
+beginWord = "hungry"
+endWord = "happy"
+None
+''''
 
-    '''
-    Valid DFT paths:
-        1, 2, 3, 5, 4, 6, 7
-        1, 2, 3, 5, 4, 7, 6
-        1, 2, 4, 7, 6, 3, 5
-        1, 2, 4, 6, 3, 5, 7
-    '''
-    graph.dft(1)
-    graph.dft_recursive(1)
+#cyclic undirected graph problem because it goes both ways always
+#sparse graph because one word only goes for a handful of words
+#edges are words with one letter apart
+#use bfs because we want shortest path to the connected word
 
-    '''
-    Valid BFS path:
-        [1, 2, 4, 6]
-    '''
-    print(graph.bfs(1, 6))
 
+#step 2 - build the graph
+
+# #load words from dictionary
+f = open('words.txt', 'r')
+words = f.read().lower().split("\n")
+f.close()
+def get_neighborss(word):
     '''
-    Valid DFS paths:
-        [1, 2, 4, 6]
-        [1, 2, 4, 7, 6]
+    Get all words that are one letter away from given word
     '''
-    print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    #Get same length words first
+    result = []
+    list_word = list(w1)
+    #Go through each letter in the word
+    for i in range(len(list_word)):
+        #Swap each letter with a letter in the alphabet
+        
+        #If resulting word is in the word_set, add to results
+    return results
+
+
+
+
+#step 3 - traverse the graph
+    def bfs(self, begin_word, end_word):
+        """
+        Return a list containing the shortest path from
+        starting_vertex to destination_vertex in
+        breath-first order.
+        """
+         #Create a queue
+        q = Queue()
+        #Enqueue a path to the starting word FIFO, since path order matters
+        q.enqueue([begin_word])
+        #Create a set to store visited vertices
+        visited = set()
+        #While queue isn't empty
+        while q.size() > 0:
+            #Dequeue the first path
+            path = q.dequeue()
+            #Grab the word from the end of the path
+            last_word = path[-1]
+            #check if it's been visited
+            #if its been visited
+            if last_word not in visited:
+                #mark as visited
+                visited.add(last_word)
+                #check if it's the target
+                if last_word == end_word:
+                    #if so return the path
+                    return path
+                #enqueue a path to all of it's neighbors
+                for neighbor in self.get_neighborss(last_word):
+                    #make a copy of the path
+                    copy_path = path.copy()
+                    #append the neighbors to the copied path
+                    copy_path.append(neighbor)
+                    #enqueue the copy to the queue
+                    q.enqueue(copy_path)

@@ -1,5 +1,6 @@
 
 # Note: This Queue class is sub-optimal. Why?
+#Because it's not using a LL and popping index 0 because time complexity is o(n) and everything would have to be shifted over. Removing from the front is expensive
 class Queue():
     def __init__(self):
         self.queue = []
