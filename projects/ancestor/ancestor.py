@@ -22,7 +22,10 @@ class Graph:
         Add a vertex to the graph.
         """
         #to add vertex just add another row
-        self.vertices[vertex_id] = set()
+        if vertex_id not in self.vertices:
+            self.vertices[vertex_id] = set()
+        #keys are vertices and the set (values) are relationships that they have and in this case it's the parents
+
 
     def add_edge(self, v1, v2):
         """
@@ -72,28 +75,48 @@ def earliest_ancestor(ancestors, starting_node):
         graph.add_vertex(node[1])
         
         #add edges(connections between vertices)
-        graph.add_edge(node[0], node[1])
-        # print(graph)
+        graph.add_edge(node[1], node[0])
+        print(graph.vertices)
     #return ancestor at farthest distance from input
     q = Queue()
     # print(f'{ancestors}')
     q.enqueue([starting_node])
-    # print(starting_node)
-    visited = set()
-    #
+    #initialize longest path variable with path of starting node
+    longest_path = [starting_node]
     while q.size() > 0:
+        #dequeue the first path
         path = q.dequeue()
-        # print(path)
+        # get last node of the path
         last_node = path[-1]
-        # print(last_node)
-        if last_node not in visited:
-            visited.add(last_node)
-            print(visited)
-    #if there is a tie for earliest ancestor,
-    
-        #return one with lowest id
-
-    #if no parents
+        #since we want longest path, check if path is longer than longest path
+        if len(path) > len(longest_path):
+            #if true, switch them
+            longest_path = path
+        #if there is a tie for earliest ancestor, (edge case)
+        elif len(path) == len(longest_path):
+            #if last node < id at the end of longest path
+            if last_node < longest_path[-1]:
+                #switch them
+                longest_path = path
+        #get neighbors of the last node
+        for neighbors in graph.get_neighbors(last_node):
+            #make a copy of the path
+            path_copy = path.copy()
+            #add the neighbors to the copy
+            path_copy.append(neighbors)
+            #add copied path to queue
+            q.enqueue(path_copy)
+            # print(visited)
+    #if no parents (edge case)
+    if starting_node == longest_path[-1]:
         #return -1
+        return -1
+    
+    #return earliest ancestor of starting node from the longest path
+    return longest_path[-1]
+
+
+    
+        
 test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
-print(earliest_ancestor(test_ancestors,1))
+print(earliest_ancestor(test_ancestors,9))
