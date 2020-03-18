@@ -196,7 +196,7 @@ class Graph:
 
 #target = destination, LL is a graph
 #searches usually return paths because you want to find the path to get there
-    def dfs_recursive(self, starting_vertex, destination_vertex, visited = None, path = None): 
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited = set(), path = []): 
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -239,3 +239,94 @@ class Graph:
         
         #return None 
         return None
+
+
+# Given two words (begin_word and end_word), and a dictionary's word list, return the shortest transformation sequence from begin_word to end_word, such that:
+# Only one letter can be changed at a time.
+# Each transformed word must exist in the word list. Note that begin_word is not a transformed word.
+# Note:
+# Return None if there is no such transformation sequence.
+# All words contain only lowercase alphabetic characters.
+# You may assume no duplicates in the word list.
+# You may assume begin_word and end_word are non-empty and are not the same.
+
+''''
+Sample:
+begin_word = "hit"
+end_word = "cog"
+return: ['hit', 'hot', 'cot', 'cog']
+
+begin_word = "sail"
+end_word = "boat"
+['sail', 'bail', 'boil', 'boll', 'bolt', 'boat']
+
+beginWord = "hungry"
+endWord = "happy"
+None
+''''
+
+#cyclic undirected graph problem because it goes both ways always
+#sparse graph because one word only goes for a handful of words
+#edges are words with one letter apart
+#use bfs because we want shortest path to the connected word
+
+
+#step 2 - build the graph
+
+# #load words from dictionary
+f = open('words.txt', 'r')
+words = f.read().lower().split("\n")
+f.close()
+def get_neighborss(word):
+    '''
+    Get all words that are one letter away from given word
+    '''
+    #Get same length words first
+    result = []
+    list_word = list(w1)
+    #Go through each letter in the word
+    for i in range(len(list_word)):
+        #Swap each letter with a letter in the alphabet
+        
+        #If resulting word is in the word_set, add to results
+    return results
+
+
+
+
+#step 3 - traverse the graph
+    def bfs(self, begin_word, end_word):
+        """
+        Return a list containing the shortest path from
+        starting_vertex to destination_vertex in
+        breath-first order.
+        """
+         #Create a queue
+        q = Queue()
+        #Enqueue a path to the starting word FIFO, since path order matters
+        q.enqueue([begin_word])
+        #Create a set to store visited vertices
+        visited = set()
+        #While queue isn't empty
+        while q.size() > 0:
+            #Dequeue the first path
+            path = q.dequeue()
+            #Grab the word from the end of the path
+            last_word = path[-1]
+            #check if it's been visited
+            #if its been visited
+            if last_word not in visited:
+                #mark as visited
+                visited.add(last_word)
+                #check if it's the target
+                if last_word == end_word:
+                    #if so return the path
+                    return path
+                #enqueue a path to all of it's neighbors
+                for neighbor in self.get_neighborss(last_word):
+                    #make a copy of the path
+                    copy_path = path.copy()
+                    #append the neighbors to the copied path
+                    copy_path.append(neighbor)
+                    #enqueue the copy to the queue
+                    q.enqueue(copy_path)

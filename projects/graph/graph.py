@@ -116,7 +116,7 @@ class Graph:
             print(starting_vertex)
             #get neighbors of starting vertex
             for neighbor in self.get_neighbors(starting_vertex):
-                #call dft_recursive on the neighbor and visited
+                #call dft_recursive on the neighbor node
                 self.dft_recursive(neighbor, visited)
 
 
