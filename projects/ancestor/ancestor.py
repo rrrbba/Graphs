@@ -55,9 +55,45 @@ class Graph:
 
 
 def earliest_ancestor(ancestors, starting_node):
-    ''''
+    '''
     Write a function that, given the dataset and the ID of an individual in the dataset, returns their earliest known ancestor – the one at the farthest distance from the input individual. 
     If there is more than one ancestor tied for "earliest", return the one with the lowest numeric ID. 
     If the input individual has no parents, the function should return -1.
-    ''''
+    '''
     #use bfs
+    #intiate a graph to use
+    graph = Graph()
+    
+    #iterate through ancestors
+    for node in ancestors:
+        # print(node)
+        #add vertices to graph
+        graph.add_vertex(node[0])
+        graph.add_vertex(node[1])
+        
+        #add edges(connections between vertices)
+        graph.add_edge(node[0], node[1])
+        # print(graph)
+    #return ancestor at farthest distance from input
+    q = Queue()
+    # print(f'{ancestors}')
+    q.enqueue([starting_node])
+    # print(starting_node)
+    visited = set()
+    #
+    while q.size() > 0:
+        path = q.dequeue()
+        # print(path)
+        last_node = path[-1]
+        # print(last_node)
+        if last_node not in visited:
+            visited.add(last_node)
+            print(visited)
+    #if there is a tie for earliest ancestor,
+    
+        #return one with lowest id
+
+    #if no parents
+        #return -1
+test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
+print(earliest_ancestor(test_ancestors,1))
